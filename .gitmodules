@@ -1,3 +1,0 @@
-[submodule "server-secret-properties"]
-	path = server-secret-properties
-	url = git@github.com:MailLink-CMC/server-secret-properties.git
