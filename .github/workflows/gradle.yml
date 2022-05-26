@@ -40,3 +40,17 @@ jobs:
         docker build --platform linux/amd64 -t cicd-test .
         docker tag cicd-test ritty27/cicd-test:${GITHUB_SHA::7}
         docker push ritty27/cicd-test:${GITHUB_SHA::7}
+
+    - name: Deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ec2-3-39-69-7.ap-northeast-2.compute.amazonaws.com
+        username: ec2-user
+        key: ${{ secrets.PRIVATE_KEY }}
+        envs: GITHUB_SHA
+        script: |
+          docker pull ritty27/cicd-test:${GITHUB_SHA::7}
+          docker tag ritty27/cicd-test:${GITHUB_SHA::7} cicd-test
+          docker stop server
+          docker run -d --rm --name server -p 8081:8080 cicd-test
+
